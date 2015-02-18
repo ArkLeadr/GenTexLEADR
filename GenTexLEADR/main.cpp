@@ -62,9 +62,9 @@ int main(void)
     imgGray.imgradient(&imgGradX,&imgGradY);
 
     //Ecriture Texture 1 x,y,xy,xx
-    char* binaryFilename = (char*) malloc(strlen(filename)  + 1+strlen("leadrshc1") + 1);
+    char* binaryFilename = (char*) malloc(strlen(filename)  + 1+strlen("leadr1") + 1);
     strcpy(binaryFilename, getFilenameWithoutExt(filename));
-    strcat(binaryFilename, ".leadrshc1");
+    strcat(binaryFilename, ".leadr1");
     printf("\n%s\n", binaryFilename);
 
     FILE* fp = NULL;
@@ -84,9 +84,9 @@ int main(void)
     fclose(fp);
 
     //Ecriture Texture 2 yy,disp,0,0
-    binaryFilename = (char*) malloc(strlen(filename) +1+ strlen("leadrshc2") + 1);
+    binaryFilename = (char*) malloc(strlen(filename) +1+ strlen("leadr2") + 1);
     strcpy(binaryFilename, getFilenameWithoutExt(filename));
-    strcat(binaryFilename, ".leadrshc2");
+    strcat(binaryFilename, ".leadr2");
     printf("\n%s\n", binaryFilename);
     fp = NULL;
 
