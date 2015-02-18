@@ -2,61 +2,30 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include <string.h>
 
 #include "IL/il.h"
+#include "fichier.h"
+#include "image.h"
 
 
-#include <iostream>
-
-
-char* getFilenameWithoutExt(const char* filename) {
-    const char *dot = strrchr(filename, '.');
-
-    if(!dot || dot == filename) return "";
-
-    size_t size = dot - filename;
-
-    char* ret = (char*) malloc(size + 1);
-
-    memcpy(ret, filename, size);
-    ret[size] = 0;
-
-    return ret;
-}
-
-char* getFilenameExt(const char* filename) {
-    const char *dot = strrchr(filename, '.');
-
-    if(!dot || dot == filename) return "";
-
-    return strdup(dot + 1);
-}
 
 
 int main(void)
 {
     ilInit();
 
-
     const char* filename = "wall002_hmap2_512x512.jpg";
 
     unsigned int m_width;
     unsigned int m_height;
-
     unsigned char* m_data;
-
     unsigned int m_bytesPerPixel;
-
     ILuint m_imageId;
-
     bool reversed = true;
 
-     // The image name to return.
+    // The image name to return.
     ilGenImages(1, &m_imageId); // Grab a new image name.
-
     ilBindImage(m_imageId);
-
     ilEnable(IL_ORIGIN_SET);
 
     if (reversed)
@@ -84,20 +53,57 @@ int main(void)
     printf("Filename (no ext)   : %s\n", getFilenameWithoutExt(filename));
     printf("Extension           : %s\n", getFilenameExt(filename));
 
-    char* binaryFilename = (char*) malloc(strlen(filename) + 1 + strlen("leadrshc") + 1);
-    strcpy(binaryFilename, getFilenameWithoutExt(filename));
-    strcat(binaryFilename, ".leadrshc");
 
+    image imgGray(m_width,m_height);
+    image imgGradX(m_width,m_height);
+    image imgGradY(m_width,m_height);
+
+    imgGray.toGray( m_data);
+    imgGray.imgradient(&imgGradX,&imgGradY);
+
+    //Ecriture Texture 1 x,y,xy,xx
+    char* binaryFilename = (char*) malloc(strlen(filename)  + 1+strlen("leadrshc1") + 1);
+    strcpy(binaryFilename, getFilenameWithoutExt(filename));
+    strcat(binaryFilename, ".leadrshc1");
     printf("\n%s\n", binaryFilename);
 
     FILE* fp = NULL;
 
     fp = fopen(binaryFilename, "wb");
-
-//    fwrite(coeffs, sizeof(float), 9*3, fp);
+    fwrite(&m_height, sizeof(int), 1, fp);
+    fwrite(&m_width, sizeof(int), 1, fp);
+    for(int i=0; i < m_height; i++)
+    {
+        for(int j=0;j < m_width; j++)
+        {
+            float tmp[4] = {imgGradX[i],imgGradY[i],imgGradX[i]*imgGradY[i],imgGradX[i]*imgGradX[i]};
+            fwrite(tmp, sizeof(float),4, fp);
+        }
+    }
 
     fclose(fp);
 
+    //Ecriture Texture 2 yy,disp,0,0
+    binaryFilename = (char*) malloc(strlen(filename) +1+ strlen("leadrshc2") + 1);
+    strcpy(binaryFilename, getFilenameWithoutExt(filename));
+    strcat(binaryFilename, ".leadrshc2");
+    printf("\n%s\n", binaryFilename);
+    fp = NULL;
+
+    fp = fopen(binaryFilename, "wb");
+    fwrite(&m_height, sizeof(int), 1, fp);
+    fwrite(&m_width, sizeof(int), 1, fp);
+    printf("%d",sizeof(float));
+    for(int i=0; i < m_height; i++)
+    {
+        for(int j=0;j < m_width; j++)
+        {
+            float tmp[4] = {imgGradY[i]*imgGradY[i],imgGray[i],0,0};
+            fwrite(tmp, sizeof(float),4, fp);
+        }
+    }
+
+    fclose(fp);
 
     return 0;
 }
