@@ -102,10 +102,6 @@ int main(int argc, char *argv[])
     fp = fopen(binaryFilename, "wb");
     fwrite(&m_height, sizeof(int), 1, fp);
     fwrite(&m_width, sizeof(int), 1, fp);
-<<<<<<< HEAD
-=======
-    printf("%d",sizeof(float));
->>>>>>> a3cd70dfc38574a80d2933b054de5be6b3a943d2
 
 //    for(int i = m_height - 1; i >= 0; --i)
     for(int i=0; i < m_height; i++)
