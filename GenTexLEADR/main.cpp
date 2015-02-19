@@ -21,7 +21,7 @@ int main(void)
     unsigned char* m_data;
     unsigned int m_bytesPerPixel;
     ILuint m_imageId;
-    bool reversed = true;
+    bool reversed = false;
 
     // The image name to return.
     ilGenImages(1, &m_imageId); // Grab a new image name.
@@ -72,11 +72,17 @@ int main(void)
     fp = fopen(binaryFilename, "wb");
     fwrite(&m_height, sizeof(int), 1, fp);
     fwrite(&m_width, sizeof(int), 1, fp);
+
+//    for(int i = m_height - 1; i >= 0; --i)
     for(int i=0; i < m_height; i++)
     {
         for(int j=0;j < m_width; j++)
         {
-            float tmp[4] = {imgGradX[i],imgGradY[i],imgGradX[i]*imgGradY[i],imgGradX[i]*imgGradX[i]};
+            float tmp[4] = {imgGradX[i*m_width + j],
+                            imgGradY[i*m_width + j],
+                            imgGradX[i*m_width + j]*imgGradY[i*m_width + j],
+                            imgGradX[i*m_width + j]*imgGradX[i*m_width + j]};
+
             fwrite(tmp, sizeof(float),4, fp);
         }
     }
@@ -94,11 +100,17 @@ int main(void)
     fwrite(&m_height, sizeof(int), 1, fp);
     fwrite(&m_width, sizeof(int), 1, fp);
     printf("%d",sizeof(float));
+
+//    for(int i = m_height - 1; i >= 0; --i)
     for(int i=0; i < m_height; i++)
     {
         for(int j=0;j < m_width; j++)
         {
-            float tmp[4] = {imgGradY[i]*imgGradY[i],imgGray[i],0,0};
+            float tmp[4] = {imgGradY[i*m_width + j]*imgGradY[i*m_width + j],
+                            imgGray[i*m_width + j],
+                            0,
+                            0};
+
             fwrite(tmp, sizeof(float),4, fp);
         }
     }
