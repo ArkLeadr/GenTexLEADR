@@ -5,8 +5,8 @@ class image
 {
 public:
     image(int h, int w);
-    float getValue(int h,int w){return m_img[h*m_width +h];}
-    void setValue(float val, int h, int w){ m_img[h*m_width +h] = val;}
+    float getValue(int h,int w){return m_img[h*m_width +w];}
+    void setValue(float val, int h, int w){ m_img[h*m_width +w] = val;}
     void toGray( unsigned char* data);
     float operationConv(const float *filtre,int i, int j, int k, int l, int widthFiltre);
     float operator[](std::size_t idx) const { return m_img[idx]; }
