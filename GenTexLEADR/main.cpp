@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
     imgGray.imgradient(&imgGradX,&imgGradY);
 
     //Ecriture Texture 1 x,y,xy,xx
-    char* binaryFilename = (char*) malloc(strlen(filename)  + 1+strlen("leadr1") + 1);
+    char* binaryFilename = (char*) malloc(strlen(filename)  + 1 + strlen("leadr") + 1);
     strcpy(binaryFilename, getFilenameWithoutExt(filename));
-    strcat(binaryFilename, ".leadr1");
+    strcat(binaryFilename, ".leadr");
     printf("\n%s\n", binaryFilename);
 
     FILE* fp = NULL;
@@ -80,7 +80,6 @@ int main(int argc, char *argv[])
     fwrite(&m_height, sizeof(int), 1, fp);
     fwrite(&m_width, sizeof(int), 1, fp);
 
-//    for(int i = m_height - 1; i >= 0; --i)
     for(int i=0; i < m_height; i++)
     {
         for(int j=0;j < m_width; j++)
@@ -94,30 +93,29 @@ int main(int argc, char *argv[])
         }
     }
 
-    fclose(fp);
+//    fclose(fp);
 
     //Ecriture Texture 2 yy,disp,0,0
-    binaryFilename = (char*) malloc(strlen(filename) +1+ strlen("leadr2") + 1);
-    strcpy(binaryFilename, getFilenameWithoutExt(filename));
-    strcat(binaryFilename, ".leadr2");
-    printf("\n%s\n", binaryFilename);
-    fp = NULL;
+//    binaryFilename = (char*) malloc(strlen(filename) +1+ strlen("leadr2") + 1);
+//    strcpy(binaryFilename, getFilenameWithoutExt(filename));
+//    strcat(binaryFilename, ".leadr2");
+//    printf("\n%s\n", binaryFilename);
+//    fp = NULL;
 
-    fp = fopen(binaryFilename, "wb");
-    fwrite(&m_height, sizeof(int), 1, fp);
-    fwrite(&m_width, sizeof(int), 1, fp);
+//    fp = fopen(binaryFilename, "wb");
+//    fwrite(&m_height, sizeof(int), 1, fp);
+//    fwrite(&m_width, sizeof(int), 1, fp);
 
-//    for(int i = m_height - 1; i >= 0; --i)
     for(int i=0; i < m_height; i++)
     {
         for(int j=0;j < m_width; j++)
         {
-            float tmp[4] = {imgGradY[i*m_width + j]*imgGradY[i*m_width + j],
-                            imgGray[i*m_width + j],
-                            0,
-                            0};
+            float tmp[1] = {imgGradY[i*m_width + j]*imgGradY[i*m_width + j]};
 
-            fwrite(tmp, sizeof(float),4, fp);
+            unsigned char disp = {(unsigned char)(imgGray[i*m_width + j] * 255.f)};
+
+            fwrite(tmp, sizeof(float),1, fp);
+            fwrite(&disp, sizeof(unsigned char),1, fp);
         }
     }
 
