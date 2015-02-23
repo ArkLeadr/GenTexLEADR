@@ -61,7 +61,11 @@ int main(int argc, char *argv[])
     image imgGradX(m_width,m_height);
     image imgGradY(m_width,m_height);
 
-    imgGray.toGray( m_data);
+    if (m_bytesPerPixel == 3)
+        imgGray.fromRGB_toNormalizedGrayscale(m_data);
+    else if (m_bytesPerPixel == 1)
+        imgGray.fromGrayscale_toNormalizedGrayscale(m_data);
+
     imgGray.imgradient(&imgGradX,&imgGradY);
 
     //Ecriture Texture 1 x,y,xy,xx

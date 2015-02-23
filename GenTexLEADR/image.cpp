@@ -5,13 +5,23 @@ image::image(int h,int w):m_width(w),m_height(h)
     m_img = (float*)malloc(m_width*m_height*sizeof(float));
 }
 
-void  image::toGray(unsigned char *data)
+void  image::fromRGB_toNormalizedGrayscale(unsigned char *data)
 {
     int cpt = 0;
     for(int i = 0; i < m_width*m_height*3;i+=3)
     {
         m_img[cpt] = 0.2125*data[i] + 0.7154*data[i+1] +0.0721*data[i+2];
         m_img[cpt]/=255.0f;
+        cpt++;
+    }
+}
+
+void  image::fromGrayscale_toNormalizedGrayscale(unsigned char *data)
+{
+    int cpt = 0;
+    for(int i = 0; i < m_width*m_height; ++i)
+    {
+        m_img[cpt] = data[i] / 255.0f;
         cpt++;
     }
 }
